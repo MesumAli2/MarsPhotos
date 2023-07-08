@@ -43,12 +43,13 @@ import com.example.marsphotos.R
 import com.example.marsphotos.network.MarsPhoto
 import com.example.marsphotos.ui.theme.MarsPhotosTheme
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 
 @Composable
 fun HomeScreen(
-    marsUiState: MarsViewModel.MarsUIState, modifier: Modifier = Modifier
+    marsUiState: MarsViewModel.MarsUIState,retryAction: () -> Unit, modifier: Modifier = Modifier
 ) {
     when (marsUiState) {
         is MarsViewModel.MarsUIState.LOADING -> LoadingScreen(modifier = modifier.fillMaxSize())
@@ -56,7 +57,7 @@ fun HomeScreen(
           photos = marsUiState.photos, modifier = modifier.fillMaxWidth()
         )
 
-        is MarsViewModel.MarsUIState.ERROR -> ErrorScreen( modifier = modifier.fillMaxSize())
+        is MarsViewModel.MarsUIState.ERROR -> ErrorScreen( retryAction =retryAction ,modifier = modifier.fillMaxSize())
     }
 }
 
@@ -102,12 +103,16 @@ Image(modifier = modifier,painter = painterResource(id = R.drawable.loading_img)
 }
 
 @Composable
-fun ErrorScreen(modifier: Modifier = Modifier) {
+fun ErrorScreen(retryAction : () -> Unit,modifier: Modifier = Modifier) {
     
     Column(modifier = modifier, verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
 
         Image(painter = painterResource(id = R.drawable.ic_connection_error), contentDescription = "")
         Text(text = stringResource(id = R.string.loading_failed), modifier= Modifier.padding(16.dp))
+        Button(onClick = retryAction) {
+            Text(text = stringResource(id = R.string.retry))
+            
+        }
     }
 }
 
