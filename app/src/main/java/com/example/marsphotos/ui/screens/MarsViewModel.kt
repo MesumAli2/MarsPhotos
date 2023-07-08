@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marsphotos.network.MarsApi
+import com.example.marsphotos.network.MarsPhoto
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -30,7 +31,7 @@ class MarsViewModel : ViewModel() {
 
 
     sealed interface MarsUIState {
-        data class Success(val photos: String) : MarsUIState
+        data class Success(val photos: List<MarsPhoto>) : MarsUIState
         object ERROR : MarsUIState
 
         object  LOADING : MarsUIState
@@ -55,7 +56,7 @@ class MarsViewModel : ViewModel() {
         viewModelScope.launch {
          marsUiState =   try {
                 val listResult = MarsApi.retrofitService.getPhotos()
-             MarsUIState.Success("Success : ${listResult.size} Mars Photo retrieved")
+             MarsUIState.Success(listResult)
             }catch (e : IOException){
                 MarsUIState.ERROR
             }
